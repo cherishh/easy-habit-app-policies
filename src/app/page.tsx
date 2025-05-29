@@ -1,13 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useCallback, useEffect } from 'react';
 
 const screenshots = ['/p1.png', '/p2.png', '/p3.png', '/p4.png', '/p5.png', '/pad1.png', '/pad2.png'];
 // 前5张为手机，后2张为iPad
 const ratios = [
-  ...Array(5).fill({ aspect: 'aspect-[9/19.5]', width: 'w-[110px]' }),
-  ...Array(2).fill({ aspect: 'aspect-[4/3]', width: 'w-[150px]' }),
+  ...Array(5).fill({ aspect: 'aspect-[9/19.5]', width: 'w-[200px]' }),
+  ...Array(2).fill({ aspect: 'aspect-[4/3]', width: 'w-[280px]' }),
 ];
 
 export default function Home() {
@@ -39,20 +40,35 @@ export default function Home() {
         <p className='text-lg text-gray-600 mb-8 text-center max-w-xl'>
           我们相信，养成好习惯，不需要复杂的功能、繁杂的界面、浮躁的广告。只需要一个清晰可见的目标和持续的行动。Easy.Habit帮助你专注当下，真正养成想要的生活方式。
         </p>
-        {/* 手机/iPad截图横滑区 */}
-        <div className='w-full max-w-2xl overflow-x-auto pb-2 mb-8'>
-          <div className='flex flex-row gap-4'>
+        {/* 手机/iPad截图横滑区，视频为第一个 */}
+        <div className='w-full max-w-5xl overflow-x-auto pb-2 mb-8'>
+          <div className='flex flex-row gap-8'>
+            {/* 渐变边框视频 */}
+            <div className='flex-shrink-0 w-[200px] max-w-[80vw] aspect-[9/19.5] p-1 bg-gradient-to-br from-pink-400 via-blue-400 to-purple-400 rounded-2xl animate-gradient'>
+              <div className='w-full h-full bg-white rounded-2xl flex items-center justify-center overflow-hidden'>
+                <video
+                  src='https://pub-ce42191b7e6f487fa1077cb938dc35a3.r2.dev/video.mp4'
+                  controls
+                  poster='/video-cover.png'
+                  className='w-full h-full object-cover rounded-2xl bg-black'
+                />
+              </div>
+            </div>
+            {/* 图片们 */}
             {screenshots.map((src, i) => (
               <div
                 key={i}
-                className={`flex-shrink-0 ${ratios[i].width} max-w-[60vw] ${ratios[i].aspect} bg-gray-100 rounded-2xl overflow-hidden border border-gray-200 cursor-pointer`}
+                className={`flex-shrink-0 ${ratios[i].width} max-w-[80vw] ${ratios[i].aspect} bg-gray-100 rounded-2xl overflow-hidden border border-gray-200 cursor-pointer`}
                 onClick={() => handleImgClick(i)}
               >
-                <img
+                <Image
                   src={src}
                   alt={`应用截图${i + 1}`}
                   className='object-cover w-full h-full select-none pointer-events-none'
                   draggable={false}
+                  fill={false}
+                  width={800}
+                  height={1600}
                 />
               </div>
             ))}
@@ -61,12 +77,20 @@ export default function Home() {
         {/* 放大图片遮罩层 */}
         {zoomIndex !== null && (
           <div className='fixed inset-0 z-50 bg-black/80 flex items-center justify-center' onClick={handleClose}>
-            <img
-              src={screenshots[zoomIndex]}
-              alt={`应用截图${zoomIndex + 1}`}
-              className='max-h-[90vh] max-w-[95vw] rounded-2xl shadow-lg border border-white'
-              onClick={e => e.stopPropagation()}
-            />
+            <div
+              className={`relative ${ratios[zoomIndex].aspect} max-w-[90vw] max-h-[90vh] flex items-center justify-center`}
+              style={{ width: '100%', height: '100%' }}
+            >
+              <Image
+                src={screenshots[zoomIndex]}
+                alt={`应用截图${zoomIndex + 1}`}
+                className='object-contain w-full h-full rounded-2xl shadow-lg border border-white'
+                onClick={e => e.stopPropagation()}
+                fill
+                sizes='90vw'
+                priority
+              />
+            </div>
             <button
               className='absolute top-6 right-6 text-white text-2xl bg-black/50 rounded-full w-10 h-10 flex items-center justify-center hover:bg-black/80 transition'
               onClick={handleClose}
