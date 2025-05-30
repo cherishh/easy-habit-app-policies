@@ -143,6 +143,10 @@ export default function Home() {
           <Link href='/term-of-use' className='hover:underline'>
             用户协议
           </Link>
+          <span>|</span>
+          <Link href='https://www.tuxi.dev/' className='hover:underline' target='_blank'>
+            关于作者
+          </Link>
         </div>
         <div>© {new Date().getFullYear()} Easy Habit</div>
       </footer>
